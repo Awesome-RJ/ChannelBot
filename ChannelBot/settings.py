@@ -18,20 +18,16 @@ async def channel_settings(channel_id, bot):
             text += f"**Caption** : Set \n\n"
         else:
             text += f'**Caption** : Not Set. \n\n'
-        if position:
-            text += f'**Caption Position** : {position.capitalize()} the previous caption\n\n'
-        else:
+        if not position:
             position = 'below'
-            text += f'**Caption Position** : {position.capitalize()} the previous caption\n\n'
+        text += f'**Caption Position** : {position.capitalize()} the previous caption\n\n'
         if buttons:
             text += f"**Buttons** : Set \n\n"
         else:
             text += f'**Buttons** : Not Set. \n\n'
-        if edit_mode:
-            text += f'**Edit Mode** : {edit_mode.capitalize()} Messages\n\n'
-        else:
+        if not edit_mode:
             edit_mode = 'media'
-            text += f'**Edit Mode** : {edit_mode.capitalize()} Messages\n\n'
+        text += f'**Edit Mode** : {edit_mode.capitalize()} Messages\n\n'
         if sticker_id:
             text += f'**Sticker** : Set (Sent Above)\n\n'
         else:
