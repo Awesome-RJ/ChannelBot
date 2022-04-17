@@ -39,17 +39,15 @@ async def num_channels():
 
 
 async def add_channel(channel_id, user_id):
-    q = SESSION.query(Channel).get(channel_id)
-    if not q:
+    if q := SESSION.query(Channel).get(channel_id):
+        SESSION.close()
+    else:
         SESSION.add(Channel(channel_id, user_id))
         SESSION.commit()
-    else:
-        SESSION.close()
 
 
 async def remove_channel(channel_id):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         SESSION.delete(q)
         SESSION.commit()
     else:
@@ -57,8 +55,7 @@ async def remove_channel(channel_id):
 
 
 async def get_channel_info(channel_id):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         info = {
             'admin_id': q.admin_id,
             'buttons': q.buttons,
@@ -76,8 +73,7 @@ async def get_channel_info(channel_id):
 
 
 async def set_caption(channel_id, caption):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         q.caption = caption
         SESSION.commit()
         return True
@@ -98,8 +94,7 @@ async def get_caption(channel_id):
 
 
 async def set_buttons(channel_id, buttons):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         q.buttons = buttons
         SESSION.commit()
         return True
@@ -120,8 +115,7 @@ async def get_buttons(channel_id):
 
 
 async def set_position(channel_id, position):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         q.position = position
         SESSION.commit()
         return True
@@ -142,8 +136,7 @@ async def get_position(channel_id):
 
 
 async def set_sticker(channel_id, sticker):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         q.sticker_id = sticker
         SESSION.commit()
         return True
@@ -163,13 +156,9 @@ async def get_sticker(channel_id):
 
 
 async def toggle_webpage_preview(channel_id, value):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         # print(value)
-        if value:
-            q.webpage_preview = True
-        else:
-            q.webpage_preview = False
+        q.webpage_preview = bool(value)
         # print(q.webpage_preview)
         SESSION.commit()
         return True
@@ -189,8 +178,7 @@ async def get_webpage_preview(channel_id):
 
 
 async def set_edit_mode(channel_id, edit_mode):
-    q = SESSION.query(Channel).get(channel_id)
-    if q:
+    if q := SESSION.query(Channel).get(channel_id):
         q.edit_mode = edit_mode
         SESSION.commit()
         return True

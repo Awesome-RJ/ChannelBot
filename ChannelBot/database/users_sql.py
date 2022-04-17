@@ -42,23 +42,18 @@ async def add_channel(user_id, channel_id):
 
 
 async def remove_channel(user_id, channel_id):
-    q = SESSION.query(Users).get(user_id)
-    if q:
+    if q := SESSION.query(Users).get(user_id):
         channels = list(set(ast.literal_eval(q.channels)))
         if q.channels and channel_id in channels:
             channels.remove(channel_id)
-            if len(channels) == 0:
-                q.channels = None
-            else:
-                q.channels = str(channels)
+            q.channels = str(channels) if channels else None
     else:
         SESSION.add(Users(user_id))
     SESSION.commit()
 
 
 async def get_channels(user_id):
-    q = SESSION.query(Users).get(user_id)
-    if q:
+    if q := SESSION.query(Users).get(user_id):
         if q.channels:
             # literal_eval() makes sure that the items remain of their type (here int).
             # While list() will make items str.

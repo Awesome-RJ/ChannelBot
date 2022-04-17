@@ -121,10 +121,10 @@ async def _callbacks(bot: Client, callback_query: CallbackQuery):
                     await callback_query.edit_message_text(f'No Buttons set \n\nUse below button to add them.', reply_markup=InlineKeyboardMarkup(_buttons))
             elif change == 'position':
                 current_position = query.split('+')[3]
-                if current_position == 'below':
-                    new_position = 'above'
-                elif current_position == 'above':
+                if current_position == 'above':
                     new_position = 'replace'
+                elif current_position == 'below':
+                    new_position = 'above'
                 else:
                     new_position = 'below'
                 await set_position(channel_id, new_position)
@@ -136,10 +136,7 @@ async def _callbacks(bot: Client, callback_query: CallbackQuery):
                     await callback_query.message.delete()
             elif change == 'edit_mode':
                 current_edit_mode = query.split('+')[3]
-                if current_edit_mode == 'all':
-                    new_edit_mode = 'media'
-                else:
-                    new_edit_mode = 'all'
+                new_edit_mode = 'media' if current_edit_mode == 'all' else 'all'
                 await set_edit_mode(channel_id, new_edit_mode)
                 text, markup, __ = await channel_settings(channel_id, bot)
                 if text:
@@ -164,10 +161,7 @@ async def _callbacks(bot: Client, callback_query: CallbackQuery):
                     await callback_query.edit_message_text(f'No Sticker set \n\nUse below button to add it.', reply_markup=InlineKeyboardMarkup(buttons))
             elif change == 'webpage_preview':
                 current = query.split('+')[3]
-                if current.lower() == 'true':
-                    new = False
-                else:
-                    new = True
+                new = current.lower() != 'true'
                 await toggle_webpage_preview(channel_id, new)
                 text, markup, __ = await channel_settings(channel_id, bot)
                 if text:
@@ -239,10 +233,7 @@ async def _callbacks(bot: Client, callback_query: CallbackQuery):
                             break
                         except ButtonUrlInvalid:
                             data = await bot.ask(user_id, 'Wrong Format for Buttons! Please try again.', timeout=300)
-            elif add == 'position':
-                # Won't happen
-                pass
-            elif add == 'edit_mode':
+            elif add in ['position', 'edit_mode']:
                 # Won't happen
                 pass
             elif add == 'sticker':
@@ -260,9 +251,6 @@ async def _callbacks(bot: Client, callback_query: CallbackQuery):
                     await crc(channel_id)
                     await urc(user_id, channel_id)
                     await callback_query.message.delete()
-            elif add == 'webpage_preview':
-                # Won't happen
-                pass
         except asyncio.exceptions.TimeoutError:
             pass
     elif query.startswith('remove'):
@@ -306,10 +294,7 @@ async def _callbacks(bot: Client, callback_query: CallbackQuery):
                     await crc(channel_id)
                     await urc(user_id, channel_id)
                     await callback_query.message.delete()
-            elif remove == 'position':
-                # Won't happen
-                pass
-            elif remove == 'edit_mode':
+            elif remove in ['position', 'edit_mode']:
                 # Won't happen
                 pass
             elif remove == 'sticker':
@@ -325,9 +310,6 @@ async def _callbacks(bot: Client, callback_query: CallbackQuery):
                     await crc(channel_id)
                     await urc(user_id, channel_id)
                     await callback_query.message.delete()
-            elif remove == 'webpage_preview':
-                # Won't happen
-                pass
     elif query.startswith('show'):
         channel_id = int(query.split('+')[1])
         sticker_id = await get_sticker(channel_id)
